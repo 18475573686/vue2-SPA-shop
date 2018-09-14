@@ -101,7 +101,7 @@ export default {
   },
   methods: {
     getGoodsList () {
-      axios.get('/goods').then(res => {
+      axios.get('http://localhost:3000/goods').then(res => {
         this.goodsList = res.data.result.list;
         console.log(res.data.result.list)
       });
