@@ -16,9 +16,9 @@ app.engine('.html', ejs.__express);
 app.set('view engine', 'html');
 
 app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
+app.use(express.json()); // 用express解析json文件
+app.use(express.urlencoded({ extended: false })); // 解析url编码的数据
+app.use(cookieParser()); // 解析请求的cookie
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
