@@ -40,6 +40,12 @@
                   </li>
                 </ul>
               </div>
+              <div class="view-more-normal"
+                   v-infinite-scroll="loadMore"
+                  infinite-scroll-disabled="busy"
+                  infinite-scroll-distance="20">
+              <img src="./../../static/loading-svg/loading-spinning-bubbles.svg" v-show="loading">
+             </div>
             </div>
           </div>
         </div>
@@ -91,7 +97,9 @@ export default {
       filterBy: false,
       page: 1,
       pageSize: 8,
-      sortFlag: true
+      sortFlag: true,
+      busy:true,
+      loading:false,
     }
   },
   mounted () {
@@ -103,16 +111,32 @@ export default {
     NavFooter
   },
   methods: {
-    getGoodsList () {
+    getGoodsList (flag) {
       var param = {
         page: this.page,
         pageSize: this.pageSize,
         sort: this.sortFlag ? 1 : -1
       }
+      this.loading = true;
       axios.get('http://localhost:3000/goods', {
         params: param
       }).then(res => {
-        this.goodsList = res.data.result.list;
+        this.loading = false;
+        if (res.data.status == '0') {
+          if (flag) {
+            this.goodsList = this.goodsList.concat(res.data.result.list);
+            if (res.data.result.count === 0) {
+              this.busy = true;
+            } else {
+              this.busy = false;
+            }
+          }else {
+            this.goodsList = res.data.result.list;
+            this.busy = false;
+          }
+        }else {
+          this.goodsList = [];
+        }
       });
     },
     setPriceFilter (index) {
@@ -134,6 +158,13 @@ export default {
       this.page = 1;
       this.getGoodsList();
     },
+    loadMore () {
+      this.busy = true;
+      setTimeout(() => {
+        this.page++;
+        this.getGoodsList(true);
+      }, 500);
+    }
   }
 }
 </script>
