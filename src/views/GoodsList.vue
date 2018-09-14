@@ -88,7 +88,10 @@ export default {
         }
       ],
       priceChecked: 'all',
-      filterBy: false
+      filterBy: false,
+      page: 1,
+      pageSize: 8,
+      sortFlag: 1
     }
   },
   mounted () {
@@ -101,9 +104,15 @@ export default {
   },
   methods: {
     getGoodsList () {
-      axios.get('http://localhost:3000/goods').then(res => {
+      var param = {
+        page: this.page,
+        pageSize: this.pageSize,
+        sort: this.sortFlag
+      }
+      axios.get('http://localhost:3000/goods', {
+        params: param
+      }).then(res => {
         this.goodsList = res.data.result.list;
-        console.log(res.data.result.list)
       });
     },
     setPriceFilter (index) {
