@@ -55,72 +55,12 @@ import './../assets/css/goods-list.css'
 import NavHeader from './../components/NavHeader.vue'
 import NavBread from './../components/NavBread'
 import NavFooter from './../components/NavFooter.vue'
+import axios from 'axios'
 export default {
   name: 'GoodsList',
   data () {
     return {
-      goodsList: [
-        {
-          "productId":"10001",
-          "productName":"小米空气净化器 2",
-          "salePrice":"699",
-          "productImage":"小米空气净化器 2.jpg"
-        },
-        {
-          "productId":"10002",
-          "productName":"米家空气净化器Pro",
-          "salePrice":"1499",
-          "productImage":"米家空气净化器Pro.jpg"
-        },
-        {
-          "productId":"10003",
-          "productName":"米家PM2.5检测仪",
-          "salePrice":"399",
-          "productImage":"米家PM2.5检测仪.jpg"
-        },
-        {
-          "productId":"10004",
-          "productName":"九号平衡车",
-          "salePrice":"1999",
-          "productImage":"九号平衡车.jpg"
-        },
-        {
-          "productId":"10005",
-          "productName":"小米路由器 3",
-          "salePrice":"139",
-          "productImage":"小米路由器 3.jpg"
-        },
-        {
-          "productId":"10006",
-          "productName":"米家压力 IH 电饭煲",
-          "salePrice":"999",
-          "productImage":"米家压力 IH 电饭煲.jpg"
-        },
-        {
-          "productId":"10007",
-          "productName":"米家IH电饭煲",
-          "salePrice":"399",
-          "productImage":"米家IH电饭煲.jpg"
-        },
-        {
-          "productId":"10008",
-          "productName":"米家恒温电水壶",
-          "salePrice":"199",
-          "productImage":"米家恒温电水壶.jpg"
-        },
-        {
-          "productId":"10009",
-          "productName":"米家小白智能摄像机",
-          "salePrice":"399",
-          "productImage":"米家小白智能摄像机.jpg"
-        },
-        {
-          "productId":"10010",
-          "productName":"Yeelight床头灯",
-          "salePrice":"249",
-          "productImage":"Yeelight床头灯.jpg"
-        }
-      ],
+      goodsList: [],
       priceFilter: [
         {
           startPrice:'0.00',
@@ -151,12 +91,21 @@ export default {
       filterBy: false
     }
   },
+  mounted () {
+    this.getGoodsList();
+  },
   components: {
     NavHeader,
     NavBread,
     NavFooter
   },
   methods: {
+    getGoodsList () {
+      axios.get('/goods').then(res => {
+        this.goodsList = res.data.result.list;
+        console.log(res.data.result.list)
+      });
+    },
     setPriceFilter (index) {
       this.priceChecked = index
     },
