@@ -70,6 +70,14 @@ export default {
       priceFilter: [
         {
           startPrice:'0.00',
+          endPrice:'100.00'
+        },
+        {
+          startPrice:'100.00',
+          endPrice:'500.00'
+        },
+        {
+          startPrice:'500.00',
           endPrice:'1000.00'
         },
         {
@@ -82,14 +90,6 @@ export default {
         },
         {
           startPrice:'3000.00',
-          endPrice:'4000.00'
-        },
-        {
-          startPrice:'4000.00',
-          endPrice:'5000.00'
-        },
-        {
-          startPrice:'5000.00',
           endPrice:'6000.00'
         }
       ],
@@ -115,7 +115,8 @@ export default {
       var param = {
         page: this.page,
         pageSize: this.pageSize,
-        sort: this.sortFlag ? 1 : -1
+        sort: this.sortFlag ? 1 : -1,
+        priceLevel: this.priceChecked
       }
       this.loading = true;
       axios.get('http://localhost:3000/goods', {
@@ -140,7 +141,9 @@ export default {
       });
     },
     setPriceFilter (index) {
-      this.priceChecked = index
+      this.priceChecked = index;
+      this.page = 1;
+      this.getGoodsList();
     },
     showFilterPop () {
       this.filterBy = true
