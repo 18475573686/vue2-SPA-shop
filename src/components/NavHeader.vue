@@ -96,7 +96,20 @@ export default {
       nickName: ''
     }
   },
+  mounted () {
+    this.checkLogin();
+  },
   methods: {
+    // 检查登录
+    checkLogin () {
+      axios.get('/users/checkLogin').then((response) => {
+        var res = response.data;
+        if (res.status === 0) {
+          this.nickName = res.result;
+          this.loginModalFlag = false;
+        }
+      });
+    },
     login () {
       if (!this.userName || !this.userPwd) {
         this.errorTip = true;
