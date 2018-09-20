@@ -50,6 +50,30 @@
           </div>
         </div>
       </div>
+      <!-- 商品加入购物车时，请先登录的模态框 start -->
+      <modal v-bind:mdShow="mdShow" v-on:close="closeModal">
+        <p slot="message">
+          请先登录，否则无法加入到购物车中！
+        </p>
+        <div slot="btnGroup">
+          <a href="javascript:void(0)" class="btn btn--m" @click="mdShow = false">关闭</a>
+        </div>
+      </modal>
+      <!-- 商品加入购物车时，请先登录的模态框 end -->
+      <!-- 商品成功加入购物模态框 start -->
+      <modal v-bind:mdShow="mdShowCart" v-on:close="closeModal">
+        <p slot="message">
+          <svg class="icon-status-ok">
+            <use xmlns:xlink="http:///www.w3.org/1999/xlink" xlink:href="#icon-status-ok"></use>
+          </svg>
+          <span>加入购物车成功！</span>
+        </p>
+        <div slot="btnGroup">
+          <a href="javascript:void(0)" class="btn btn--m" @click="mdShowCart = false">继续购物</a>
+          <router-link class="btn btn--m btn--red" href="javascript:void(0)" to="/cart">查看购物车</router-link>
+        </div>
+      </modal>
+      <!-- 商品成功加入购物模态框 end -->
       <div class="md-overlay" v-show="filterBy" @click.stop="closePop"></div>
       <nav-footer></nav-footer>
     </div>
@@ -61,6 +85,7 @@ import './../assets/css/goods-list.css'
 import NavHeader from './../components/NavHeader.vue'
 import NavBread from './../components/NavBread'
 import NavFooter from './../components/NavFooter.vue'
+import Modal from './../components/Modal.vue'
 import axios from 'axios'
 export default {
   name: 'GoodsList',
@@ -100,6 +125,8 @@ export default {
       sortFlag: true,
       busy:true,
       loading:false,
+      mdShow: false,
+      mdShowCart: false
     }
   },
   mounted () {
@@ -108,7 +135,8 @@ export default {
   components: {
     NavHeader,
     NavBread,
-    NavFooter
+    NavFooter,
+    Modal
   },
   methods: {
     getGoodsList (flag) {
@@ -146,10 +174,11 @@ export default {
       this.getGoodsList();
     },
     showFilterPop () {
-      this.filterBy = true
+      this.filterBy = true;
     },
     closePop () {
-      this.filterBy = false
+      this.filterBy = false;
+      this.mdShowCart = false;
     },
     sortGoods () {
       this.sortFlag = !this.sortFlag;
@@ -174,11 +203,17 @@ export default {
       }).then(res => {
         var res = res.data;
         if (res.status==0) {
-          alert('加入成功');
+          // alert('加入成功');
+          this.mdShowCart = true;
         } else {
-          alert('Error msg:' + res.msg);
+          // alert('Error msg:' + res.msg);
+          this.mdShow = true;
         }
       });
+    },
+    closeModal () {
+      this.mdShow = false;
+      this.mdShowCart = false;
     }
   }
 }
