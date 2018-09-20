@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var User = require('./../models/user');
+var Utils = require('./../utils/utils');
 
 
 // 登录接口
@@ -11,10 +12,7 @@ router.post('/login', function (req, res, next) {
   };
   User.findOne(param, function (err, doc) {
     if (err) {
-      res.json({
-        status: '1',
-        msg: err.message
-      })
+      res.json(Utils.failed(err))
     } else {
       if (doc) {
         // 给客户端返回cookie
@@ -26,13 +24,9 @@ router.post('/login', function (req, res, next) {
           path: '/',
           maxAge: 1000*60*60
         });
-        res.json({
-          status: '0',
-          msg: '',
-          result: {
-            userName: doc.userName
-          }
-        })
+        res.json(Utils.success({
+          userName: doc.userName
+        }));
       }
     }
   });
@@ -45,11 +39,7 @@ router.post('/logout', function (req, res, next) {
     path: '/',
     maxAge: -1
   });
-  res.json({
-    status: '0',
-    msg: '',
-    result: ''
-  })
+  res.json(Utils.success());
 });
 
 // 检查登录状态cookies
@@ -67,6 +57,20 @@ router.get('/checkLogin', function (req, res, next) {
       result: ''
     });
   }
+});
+
+//  查询当前用户的购物车数据
+router.get('/cartList', function (req, res, next) {
+  var userId = req.cookies.userId;
+  User.findOne({userId: userId}, function (err, doc) {
+    if (err) {
+      res.json(Utils.failed(err));
+    } else {
+      if (doc) {
+        res.json(Utils.success(doc.cartList));
+      }
+    }
+  });
 });
 
 module.exports = router;
