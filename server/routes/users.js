@@ -73,4 +73,24 @@ router.get('/cartList', function (req, res, next) {
   });
 });
 
+// 删除购物车中的数据
+router.post('/cartDel', function (req, res, next) {
+  var userId = req.cookies.userId,productId = req.body.productId;
+  User.update({
+    userId: userId
+  }, {
+    $pull: {
+      'cartList': {
+        'productId': productId
+      }
+    }
+  }, function (err, doc) {
+    if (err) {
+      res.json(Utils.failed(err));
+    } else {
+      res.json(Utils.success('success'));
+    }
+  });
+});
+
 module.exports = router;

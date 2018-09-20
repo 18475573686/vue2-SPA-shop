@@ -94,7 +94,7 @@
                   </div>
                   <div class="cart-tab-5">
                     <div class="cart-item-opration">
-                      <a href="javascript:;" class="item-edit-btn">
+                      <a href="javascript:;" class="item-edit-btn" @click="delCartConfirm(item)">
                         <svg class="icon icon-del">
                           <use xlink:href="#icon-del"></use>
                         </svg>
@@ -129,6 +129,15 @@
           </div>
         </div>
       </div>
+      <!-- 删除模态框 start -->
+      <Modal v-bind:mdShow="modalConfirm" @close="closeModal">
+        <p slot="message">你确认要删除此条数据吗？</p>
+        <div slot="btnGroup">
+          <a href="javascript:;" class="btn btn--m" @click="delCart">确认</a>
+          <a href="javascript:;" class="btn btn--m btn--red" @click="modalConfirm = false">关闭</a>
+        </div>
+      </Modal>
+      <!-- 删除模态框 end -->
       <nav-footer></nav-footer>
     </div>
 </template>
@@ -145,7 +154,9 @@ import axios from 'axios'
 export default {
   data () {
     return {
-      cartList: []
+      cartList: [],
+      modalConfirm: false,
+      delItem: {}
     }
   },
   components: {
@@ -173,6 +184,25 @@ export default {
       axios.get('/users/cartList').then((response) => {
         let res = response.data;
         this.cartList = res.result;
+      });
+    },
+    closeModal () {
+      this.modalConfirm = false;
+    },
+    delCartConfirm (item) {
+      this.delItem = item;
+      this.modalConfirm = true;
+    },
+    delCart () {
+      axios.post('/users/cartDel', {
+        productId: this.delItem.productId
+      }).then((response) => {
+        let res = response.data;
+        if (res.status == 0) {
+          this.modalConfirm = false;
+          var delCount = this.delItem.productNum;
+          this.init();
+        }
       });
     }
   }
