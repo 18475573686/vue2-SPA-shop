@@ -122,7 +122,7 @@
                   总价: <span class="total-price">{{totalPrice | currency('￥')}}</span>
                 </div>
                 <div class="btn-wrap">
-                  <a class="btn btn--red">去结算</a>
+                  <a href="#/address" class="btn btn--red">去结算</a>
                 </div>
               </div>
             </div>
