@@ -67,7 +67,7 @@
                       <dd class="tel">{{item.tel}}</dd>
                     </dl>
                     <div class="addr-opration addr-del">
-                      <a href="javascript:;" class="addr-del-btn">
+                      <a href="javascript:;" class="addr-del-btn" @click="delAddressConfirm(item.addressId)">
                         <svg class="icon icon-del"><use xlink:href="#icon-del"></use></svg>
                       </a>
                     </div>
@@ -124,6 +124,23 @@
           </div>
         </div>
       </div>
+      <!-- 删除收货地址模态框 start -->
+      <Modal :mdShow="isMdShow" @close="closeModal">
+        <p slot="message">您是否确定要删除此地址？</p>
+        <div slot="btnGroup">
+          <a href="javascript:void(0)" class="btn btn--m" @click="delAddress">确认</a>
+          <a href="javascript:void(0)" class="btn btn--m btn--red" @click="isMdShow = false">取消</a>
+        </div>
+      </Modal>
+      <!-- 删除收货地址模态框 end -->
+      <!-- 只剩下一条收货地址不能删除的模态框start -->
+      <Modal :mdShow="isMdShowAdress" @close="closeModal">
+        <p slot="message">地址列表至少有一条数据，已无法继续删除。</p>
+        <div slot="btnGroup">
+          <a href="javascript:void(0)" class="btn btn--m btn--red" @click="isMdShowAdress = false">取消</a>
+        </div>
+      </Modal>
+      <!-- 只剩下一条收货地址不能删除的模态框start -->
       <nav-footer></nav-footer>
     </div>
 </template>
@@ -134,6 +151,7 @@ import './../assets/css/checkout.css'
 import NavHeader from './../components/NavHeader.vue'
 import NavBread from './../components/NavBread.vue'
 import NavFooter from './../components/NavFooter.vue'
+import Modal from './../components/Modal.vue'
 import axios from 'axios'
 export default {
   name: 'Address',
@@ -144,13 +162,15 @@ export default {
       selectedAddrId: '',
       addressList: [],
       isMdShow: false,
+      isMdShowAdress: false,
       addressId: ''
     }
   },
   components: {
     NavHeader,
     NavBread,
-    NavFooter
+    NavFooter,
+    Modal
   },
   methods: {
     init () {
@@ -167,6 +187,32 @@ export default {
         if (res.status === 0) {
           console.log('set default');
           this.init();
+        }
+      })
+    },
+    delAddressConfirm (addressId) {
+      if (this.addressList.length > 1) {
+        this.isMdShow = true;
+      } else {
+        this.isMdShowAdress = true;
+      }
+      this.addressId = addressId;
+    },
+    closeModal () {
+      this.isMdShow = false;
+      this.isMdShowAdress = false;
+    },
+    delAddress () {
+      axios.post('/users/delAddress', {
+        addressId: this.addressId
+      }).then((response) => {
+        const res = response.data;
+        if (res.status === 0) {
+          console.log('del success');
+          this.isMdShow = false;
+          this.init();
+        } else {
+          console.log('最后一条了，无法删除');
         }
       })
     }

@@ -180,4 +180,36 @@ router.post('/setDefault', function (req, res, next) {
   }
 });
 
+ // 删除地址接口
+router.post('/delAddress', function (req, res, next) {
+  var userId = req.cookies.userId,addressId = req.body.addressId;
+  User.findOne({userId: userId}, function (err, doc) {
+    if (err) {
+      res.json(Utils.failed(err));
+    } else {
+     if (doc.addressList.length > 1) {
+        User.update({
+          userId: userId
+        }, {
+          $pull: {
+            'addressList': {
+              'addressId': addressId
+            }
+          }
+        }, function (err1, doc1) {
+          if (err1) {
+            res.json(Utils.failed(err1));
+          } else {
+            res.json(Utils.success('delete address success'));
+          }
+        });
+     } else {
+       res.json(Utils.failed({
+         message: '至少保留一条收货地址！'
+       }));
+     }
+    }
+  });
+});
+
 module.exports = router;
