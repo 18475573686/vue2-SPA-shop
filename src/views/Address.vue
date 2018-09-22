@@ -60,7 +60,7 @@
             <div class="addr-list-wrap">
               <div class="addr-list">
                 <ul>
-                  <li v-for="(item, index) in addressList" :key="index" v-bind:class="{'check': checkIndex==index}" @click="checkIndex=index;selectedAddrId=item.addressId">
+                  <li v-for="(item, index) in addressListFilter" :key="index" v-bind:class="{'check': checkIndex==index}" @click="checkIndex=index;selectedAddrId=item.addressId">
                     <dl>
                       <dt>{{item.userName}}</dt>
                       <dd class="address">{{item.streetName}}</dd>
@@ -88,8 +88,9 @@
               </div>
 
               <div class="shipping-addr-more">
-                <a class="addr-more-btn up-down-btn" href="javascript:;" >
-                  更多地址
+                <a class="addr-more-btn up-down-btn" href="javascript:;" @click="expand"  :class="{'open': limit > 3}">
+                  <span v-if="limit == 3">更多地址</span>
+                  <span v-else>收起</span>
                   <i class="i-up-down">
                     <i class="i-up-down-l"></i>
                     <i class="i-up-down-r"></i>
@@ -215,10 +216,22 @@ export default {
           console.log('最后一条了，无法删除');
         }
       })
+    },
+    expand () {
+      if (this.limit==3) {
+        this.limit = this.addressList.length;
+      } else {
+        this.limit = 3;
+      }
     }
   },
   mounted () {
     this.init()
+  },
+  computed: {
+    addressListFilter () {
+      return this.addressList.slice(0, this.limit);
+    }
   }
 }
 </script>
