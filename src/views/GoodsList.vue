@@ -34,7 +34,7 @@
                     </div>
                     <div class="main">
                       <div class="name">{{item.productName}}</div>
-                      <div class="price">{{item.salePrice}}</div>
+                      <div class="price">{{item.salePrice | currency('￥')}}</div>
                       <div class="btn-area">
                         <a href="javascript:;" class="btn btn--m" @click.stop="addCart(item.productId)">加入购物车</a>
                       </div>
@@ -88,6 +88,7 @@ import NavHeader from './../components/NavHeader.vue'
 import NavBread from './../components/NavBread'
 import NavFooter from './../components/NavFooter.vue'
 import Modal from './../components/Modal.vue'
+import {currency} from './../utils/currency'
 import axios from 'axios'
 export default {
   name: 'GoodsList',
@@ -133,6 +134,9 @@ export default {
   },
   mounted () {
     this.getGoodsList();
+  },
+  filters: {
+    currency: currency
   },
   components: {
     NavHeader,
