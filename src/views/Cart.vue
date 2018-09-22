@@ -62,7 +62,7 @@
                 <li v-for="(item, index) in cartList" :key="index">
                   <div class="cart-tab-1">
                     <div class="cart-item-check">
-                      <a href="javascipt:;" class="checkbox-btn item-check-btn" :class="{'check': item.checked == '1'}">
+                      <a href="javascipt:;" class="checkbox-btn item-check-btn" :class="{'check': item.checked == '1'}" @click="editCart('checked', item)">
                         <svg class="icon icon-ok">
                           <use xlink:href="#icon-ok"></use>
                         </svg>
