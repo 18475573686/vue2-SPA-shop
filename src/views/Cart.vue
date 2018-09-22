@@ -122,7 +122,7 @@
                   总价: <span class="total-price">{{totalPrice | currency('￥')}}</span>
                 </div>
                 <div class="btn-wrap">
-                  <a href="#/address" class="btn btn--red">去结算</a>
+                  <a href="javascript:void(0)" class="btn btn--red" :class="{'btn--dis': checkedCount == 0}" @click="checkOut">去结算</a>
                 </div>
               </div>
             </div>
@@ -255,6 +255,13 @@ export default {
           console.log('update success')
         }
       });
+    },
+    checkOut () {
+      if (this.checkedCount > 0) {
+        this.$router.push({
+          path: '/address'
+        });
+      }
     }
   }
 }
