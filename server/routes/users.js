@@ -147,4 +147,37 @@ router.get('/addressList', function (req, res, next) {
   });
 });
 
+ // 设置默认地址接口
+router.post('/setDefault', function (req, res, next) {
+  var userId = req.cookies.userId,
+      addressId = req.body.addressId;
+  if (!addressId) {
+    res.json(Utils.failed({
+      message: 'addressId is null'
+    }));
+  } else {
+    User.findOne({userId: userId}, function (err, doc) {
+      if (err) {
+        res.json(Utils.failed(err));
+      } else {
+        var addressList = doc.addressList;
+        addressList.forEach((item) => {
+          if (item.addressId === addressId) {
+            item.isDefault = true;
+          } else {
+            item.isDefault = false;
+          }
+        });
+        doc.save(function (err1, doc1) {
+          if (err) {
+            res.json(Utils.failed(err));
+          } else {
+            res.json(Utils.success('address update sucess'));
+          }
+        });
+      }
+    });
+  }
+});
+
 module.exports = router;
