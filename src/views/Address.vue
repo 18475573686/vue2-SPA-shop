@@ -60,21 +60,21 @@
             <div class="addr-list-wrap">
               <div class="addr-list">
                 <ul>
-                  <li>
+                  <li v-for="(item, index) in addressList" :key="index">
                     <dl>
-                      <dt>XXX（用户名）</dt>
-                      <dd class="address">湖南省长沙市麓谷企业广场</dd>
-                      <dd class="tel">1017735262@qq.com</dd>
+                      <dt>{{item.userName}}</dt>
+                      <dd class="address">{{item.streetName}}</dd>
+                      <dd class="tel">{{item.tel}}</dd>
                     </dl>
                     <div class="addr-opration addr-del">
                       <a href="javascript:;" class="addr-del-btn">
                         <svg class="icon icon-del"><use xlink:href="#icon-del"></use></svg>
                       </a>
                     </div>
-                    <div class="addr-opration addr-set-default">
-                      <a href="javascript:;" class="addr-set-default-btn"><i>Set default</i></a>
+                    <div class="addr-opration addr-set-default" v-if="!item.isDefault">
+                      <a href="javascript:;" class="addr-set-default-btn"><i>设为默认地址</i></a>
                     </div>
-                    <div class="addr-opration addr-default">默认地址</div>
+                    <div class="addr-opration addr-default" v-if="item.isDefault">默认地址</div>
                   </li>
                   <li class="addr-new">
                     <div class="add-new-inner">
@@ -134,13 +134,36 @@ import './../assets/css/checkout.css'
 import NavHeader from './../components/NavHeader.vue'
 import NavBread from './../components/NavBread.vue'
 import NavFooter from './../components/NavFooter.vue'
+import axios from 'axios'
 export default {
   name: 'Address',
+  data () {
+    return {
+      limit: 3,
+      checkIndex: 0,
+      selectedAddrId: '',
+      addressList: [],
+      isMdShow: false,
+      addressId: ''
+    }
+  },
   components: {
     NavHeader,
     NavBread,
     NavFooter
   },
+  methods: {
+    init () {
+      axios.get('/users/addressList').then((response) => {
+        const res = response.data;
+        this.addressList = res.result;
+        console.log(this.addressList)
+      })
+    }
+  },
+  mounted () {
+    this.init()
+  }
 }
 </script>
 

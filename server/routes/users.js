@@ -135,4 +135,16 @@ router.post('/editCheckAll', function (req, res, next) {
   });
 });
 
+ // 查询用户地址接口
+router.get('/addressList', function (req, res, next) {
+  var userId = req.cookies.userId;
+  User.findOne({userId: userId}, function (err, doc) {
+    if (err) {
+      res.json(Utils.failed(err));
+    } else {
+      res.json(Utils.success(doc.addressList));
+    }
+  });
+});
+
 module.exports = router;
