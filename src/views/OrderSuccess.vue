@@ -26,8 +26,8 @@
           <div class="order-create-main">
             <h3>恭喜！<br>订单提交成功，请尽快付款！</h3>
             <p>
-              <span>订单号：123456789</span>
-              <span>应付金额：4465132</span>
+              <span>订单号：{{orderId}}</span>
+              <span>应付金额：{{orderTotal}}</span>
             </p>
             <div class="order-create-btn-wrap">
               <div class="btn-l-wrap">
@@ -56,6 +56,32 @@ export default {
     NavHeader,
     NavBread,
     NavFooter
+  },
+  data () {
+    return {
+      orderId: '',
+      orderTotal: 0
+    }
+  },
+  mounted () {
+    this.init();
+  },
+  methods: {
+    init () {
+      var orderId = this.$route.query.orderId;
+      if (!orderId) return;
+      axios.get('/users/orderDetail', {
+        params: {
+          orderId: orderId
+        }
+      }).then((response) => {
+        const res = response.data;
+        if (res.status === 0) {
+          this.orderId = orderId;
+          this.orderTotal = res.result.orderTotal
+        }
+      })
+    }
   }
 }
 </script>
