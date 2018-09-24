@@ -27,7 +27,7 @@
             <h3>恭喜！<br>订单提交成功，请尽快付款！</h3>
             <p>
               <span>订单号：{{orderId}}</span>
-              <span>应付金额：{{orderTotal}}</span>
+              <span>应付金额：{{orderTotal | currency}}</span>
             </p>
             <div class="order-create-btn-wrap">
               <div class="btn-l-wrap">
@@ -49,6 +49,7 @@
 import NavHeader from './../components/NavHeader.vue'
 import NavBread from './../components/NavBread.vue'
 import NavFooter from './../components/NavFooter.vue'
+import {currency} from './../utils/currency'
 import axios from 'axios'
 export default {
   name: 'OrderSuccess',
@@ -62,6 +63,9 @@ export default {
       orderId: '',
       orderTotal: 0
     }
+  },
+  filters: {
+    currency: currency
   },
   mounted () {
     this.init();
