@@ -120,7 +120,8 @@
               </div>
             </div>
             <div class="next-btn-wrap">
-              <a class="btn btn--m btn--red">去结算</a>
+              <!--<a class="btn btn&#45;&#45;m btn&#45;&#45;red">去结算</a>-->
+              <router-link class="btn btn--m btn--red" v-bind:to="{path: 'orderConfirm', query: {'addressId': selectedAddrId}}">去结算</router-link>
             </div>
           </div>
         </div>
@@ -178,6 +179,7 @@ export default {
       axios.get('/users/addressList').then((response) => {
         const res = response.data;
         this.addressList = res.result;
+        this.selectedAddrId = this.addressList[0].addressId;
       })
     },
     setDefault (addressId) {
