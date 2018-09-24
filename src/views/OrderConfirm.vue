@@ -55,31 +55,31 @@
                 </ul>
               </div>
               <ul class="cart-item-list">
-                <li>
+                <li v-for="(item, index) in cartList" :key="index" v-if="item.checked=='1'">
                   <div class="cart-tab-1">
                     <div class="cart-item-pic">
-                      <img src="/static/1.jpg" alt="">
+                      <img v-lazy="`/static/` + item.productImage" alt="">
                     </div>
                     <div class="cart-item-title">
-                      <div class="item-name">小米电视4 55英寸</div>
+                      <div class="item-name">{{item.productName}}</div>
 
                     </div>
                   </div>
                   <div class="cart-tab-2">
-                    <div class="item-price">3999</div>
+                    <div class="item-price">{{item.salePrice}}</div>
                   </div>
                   <div class="cart-tab-3">
                     <div class="item-quantity">
                       <div class="select-self">
                         <div class="select-self-area">
-                          <span class="select-ipt">×10</span>
+                          <span class="select-ipt">×{{item.productNum}}</span>
                         </div>
                       </div>
                       <div class="item-stock item-stock-no">有货</div>
                     </div>
                   </div>
                   <div class="cart-tab-4">
-                    <div class="item-price-total">￥39990</div>
+                    <div class="item-price-total">{{item.salePrice*item.productNum}}</div>
                   </div>
                 </li>
               </ul>
@@ -92,23 +92,23 @@
               <ul>
                 <li>
                   <span>商品总额:</span>
-                  <span>￥39990</span>
+                  <span>{{subTotal}}</span>
                 </li>
                 <li>
                   <span>运费:</span>
-                  <span>￥100</span>
+                  <span>+{{shipping}}</span>
                 </li>
                 <li>
                   <span>优惠:</span>
-                  <span>￥100</span>
+                  <span>-{{discount}}</span>
                 </li>
                 <li>
                   <span>纳税:</span>
-                  <span>￥400</span>
+                  <span>+{{tax}}</span>
                 </li>
                 <li class="order-total-price">
                   <span>应付总额:</span>
-                  <span>￥40390</span>
+                  <span>{{orderTotal}}</span>
                 </li>
               </ul>
             </div>
@@ -135,13 +135,41 @@ import NavHeader from './../components/NavHeader.vue'
 import NavBread from './../components/NavBread.vue'
 import NavFooter from './../components/NavFooter.vue'
 import Modal from './../components/Modal.vue'
+import axios from 'axios'
 export default {
   name: 'OrderConfirm',
+  data () {
+    return {
+      cartList: [],
+      subTotal: 0,
+      orderTotal: 0,
+      shipping: 100,
+      discount: 200,
+      tax: 400
+    }
+  },
+  mounted () {
+    this.init();
+  },
   components: {
     NavHeader,
     NavBread,
     NavFooter,
     Modal
+  },
+  methods: {
+    init () {
+      axios.get('/users/cartList').then((response) => {
+        let res = response.data;
+        this.cartList = res.result;
+        this.cartList.forEach((item) => {
+          if (item.checked === '1') {
+            this.subTotal += item.salePrice * item.productNum;
+          }
+        });
+        this.orderTotal = this.subTotal + this.shipping - this.discount + this.tax;
+      });
+    }
   }
 }
 </script>
