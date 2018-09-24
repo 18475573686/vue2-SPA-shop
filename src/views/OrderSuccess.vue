@@ -49,6 +49,7 @@
 import NavHeader from './../components/NavHeader.vue'
 import NavBread from './../components/NavBread.vue'
 import NavFooter from './../components/NavFooter.vue'
+import axios from 'axios'
 export default {
   name: 'OrderSuccess',
   components: {

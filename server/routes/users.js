@@ -266,4 +266,38 @@ router.post('/payMent', function (req, res, next) {
   });
 });
 
+  // 根据订单Id查询订单信息
+router.get('/orderDetail', function (req, res, next) {
+  var userId = req.cookies.userId,orderId = req.param('orderId');
+  User.findOne({userId: userId}, function (err, userInfo) {
+    if (err) {
+      res.json(Utils.failed(err));
+    } else {
+      var orderList = userInfo.orderList;
+      if (orderList.length > 0) {
+        var orderTotal = 0;
+        orderList.forEach((item) => {
+          if (item.orderId == orderId) {
+            orderTotal = item.orderTotal;
+          }
+        });
+        if (orderTotal > 0) {
+          res.json(Utils.success({
+            orderId: orderId,
+            orderTotal: orderTotal
+          }));
+        } else {
+          res.json(Utils.failed({
+            message: '无此订单'
+          }));
+        }
+      } else {
+        res.json(Utils.failed({
+          message: '当前用户未创建订单'
+        }));
+      }
+    }
+  });
+});
+
 module.exports = router;
