@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var User = require('./../models/user');
 var Utils = require('./../utils/utils');
+require('./../utils/format')
 
 
 // 登录接口
@@ -208,6 +209,59 @@ router.post('/delAddress', function (req, res, next) {
          message: '至少保留一条收货地址！'
        }));
      }
+    }
+  });
+});
+
+ // 创建订单接口
+router.post('/payMent', function (req, res, next) {
+  var userId = req.cookies.userId,
+      addressId = req.body.addressId,
+      orderTotal = req.body.orderTotal;
+  User.findOne({userId: userId}, function (err, doc) {
+    if (err) {
+      res.json(Utils.failed(err));
+    } else {
+      var address = '',goodsList = [];
+      // 获取当前用户的地址信息
+      doc.addressList.forEach((item) => {
+        if (address == item.address) {
+          address = item;
+        }
+      });
+      // 获取用户购物车的购买商品
+      doc.cartList.filter((item) => {
+        if (item.checked === '1') {
+          goodsList.push(item);
+        }
+      });
+
+      var platform = '622';
+      var r1 = Math.floor(Math.random()*10);
+      var r2 = Math.floor(Math.random()*10);
+
+      var sysDate = new Date().Format('yyyyMMddhhmmss');
+      var createDate = new Date().Format('yyyy-MM--dd hh:mm:ss');
+      var orderId = platform+r1+sysDate+r2;
+      var order = {
+        orderId: orderId,
+        orderTotal: orderTotal,
+        addressInfo: address,
+        goodsList: goodsList,
+        orderStatus: '1',
+        createDate: createDate
+      };
+      doc.orderList.push(order);
+      doc.save(function (err1, doc1) {
+        if (err1) {
+          res.json(Utils.failed(err1));
+        } else {
+          res.json(Utils.success({
+            orderId: order.orderId,
+            orderTotal: order.orderTotal
+          }));
+        }
+      });
     }
   });
 });

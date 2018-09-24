@@ -116,10 +116,11 @@
 
           <div class="order-foot-wrap">
             <div class="prev-btn-wrap">
-              <button class="btn btn--m">修改订单</button>
+              <!--<button class="btn btn&#45;&#45;m">修改订单</button>-->
+              <router-link class="btn btn--m" to="/address">修改订单</router-link>
             </div>
             <div class="next-btn-wrap">
-              <button class="btn btn--m btn--red">提交订单</button>
+              <button class="btn btn--m btn--red" @click="payMent">提交订单</button>
             </div>
           </div>
         </div>
@@ -171,6 +172,20 @@ export default {
         });
         this.orderTotal = this.subTotal + this.shipping - this.discount + this.tax;
       });
+    },
+    payMent () {
+      let addressId = this.$route.query.addressId;
+      axios.post('/users/payMent', {
+        addressId: addressId,
+        orderTotal: this.orderTotal
+      }).then((response) => {
+        const res = response.data
+        if (res.status === 0) {
+          this.$router.push({
+            path: '/orderSuccess?orderId=' + res.result.orderId
+          });
+        }
+      })
     }
   }
 }
