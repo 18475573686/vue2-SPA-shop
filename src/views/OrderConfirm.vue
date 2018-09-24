@@ -66,7 +66,7 @@
                     </div>
                   </div>
                   <div class="cart-tab-2">
-                    <div class="item-price">{{item.salePrice}}</div>
+                    <div class="item-price">{{item.salePrice | currency}}</div>
                   </div>
                   <div class="cart-tab-3">
                     <div class="item-quantity">
@@ -79,7 +79,7 @@
                     </div>
                   </div>
                   <div class="cart-tab-4">
-                    <div class="item-price-total">{{item.salePrice*item.productNum}}</div>
+                    <div class="item-price-total">{{item.salePrice*item.productNum | currency}}</div>
                   </div>
                 </li>
               </ul>
@@ -92,23 +92,23 @@
               <ul>
                 <li>
                   <span>商品总额:</span>
-                  <span>{{subTotal}}</span>
+                  <span>{{subTotal | currency}}</span>
                 </li>
                 <li>
                   <span>运费:</span>
-                  <span>+{{shipping}}</span>
+                  <span>+{{shipping | currency}}</span>
                 </li>
                 <li>
                   <span>优惠:</span>
-                  <span>-{{discount}}</span>
+                  <span>-{{discount | currency}}</span>
                 </li>
                 <li>
                   <span>纳税:</span>
-                  <span>+{{tax}}</span>
+                  <span>+{{tax | currency}}</span>
                 </li>
                 <li class="order-total-price">
                   <span>应付总额:</span>
-                  <span>{{orderTotal}}</span>
+                  <span>{{orderTotal | currency}}</span>
                 </li>
               </ul>
             </div>
@@ -134,7 +134,7 @@ import './../assets/css/checkout.css'
 import NavHeader from './../components/NavHeader.vue'
 import NavBread from './../components/NavBread.vue'
 import NavFooter from './../components/NavFooter.vue'
-import Modal from './../components/Modal.vue'
+import {currency} from './../utils/currency.js'
 import axios from 'axios'
 export default {
   name: 'OrderConfirm',
@@ -154,8 +154,10 @@ export default {
   components: {
     NavHeader,
     NavBread,
-    NavFooter,
-    Modal
+    NavFooter
+  },
+  filters: {
+    currency: currency
   },
   methods: {
     init () {
