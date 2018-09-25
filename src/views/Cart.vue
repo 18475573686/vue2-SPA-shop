@@ -215,18 +215,22 @@ export default {
         if (res.status == 0) {
           this.modalConfirm = false;
           var delCount = this.delItem.productNum;
+          this.$store.commit('changeCartCount', -delCount);
           this.init();
         }
       });
     },
     editCart (flag, item) {
+      let count = 0;
       if (flag == 'add') {
         item.productNum++;
+        count++;
       } else if (flag == 'minu') {
         if (item.productNum <= 1) {
           return;
         }
         item.productNum--;
+        count--;
       } else {
         item.checked = item.checked == '1' ? '0' : '1';
       }
@@ -238,6 +242,7 @@ export default {
       }).then((response) => {
         let res = response.data;
         if (res.status === 0) {
+          this.$store.commit('changeCartCount', count);
           console.log('update suc');
         }
       });

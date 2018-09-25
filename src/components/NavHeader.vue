@@ -36,7 +36,7 @@
               <a href="javascript:void(0)" class="navbar-link" @click="logOut" v-else>退出</a>
               <!--<a href="javascript:void(0)" class="navbar-link">登出</a>-->
               <div class="navbar-cart-container">
-                <span class="navbar-cart-count"></span>
+                <span class="navbar-cart-count" v-text="cartCount" v-if="cartCount && showCart"></span>
                 <a class="navbar-link" href="/#/cart">
                   <svg class="navbar-cart-logo">
                     <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-cart"></use>
@@ -85,6 +85,7 @@
 <script>
 import './../assets/css/login.css'
 import axios from 'axios'
+import { mapState } from 'vuex'
 export default {
   name: 'NavHeader',
   data () {
@@ -93,8 +94,11 @@ export default {
       userPwd: 123456,
       errorTip: false,
       loginModalFlag: false,
-      nickName: ''
+      showCart: false
     }
+  },
+  computed: {
+    ...mapState(['nickName', 'cartCount'])
   },
   mounted () {
     this.checkLogin();
@@ -105,8 +109,14 @@ export default {
       axios.get('/users/checkLogin').then((response) => {
         var res = response.data;
         if (res.status === 0) {
-          this.nickName = res.result;
+          // this.nickName = res.result;
+          this.$store.commit('updateUserInfo', res.result);
+          this.showCart = true;
           this.loginModalFlag = false;
+        } else {
+          if (this.$route.path != '/goodslist') {
+            this.$router.push('/goodslist');
+          }
         }
       });
     },
@@ -121,10 +131,12 @@ export default {
         userPwd: this.userPwd
       }).then((response) => {
         let res = response.data;
-        if (res.status=='0') {
+        if (res.status===0) {
           this.errorTip = false;
           this.loginModalFlag = false;
-          this.nickName = res.result.userName;
+          this.$store.commit('updateUserInfo', res.result.userName);
+          this.getCartCount();
+          // this.nickName = res.result.userName;
         } else {
           this.errorTip = true;
         }
@@ -134,9 +146,20 @@ export default {
       axios.post('/users/logout').then((response) => {
         let res = response.data;
         if (res.status=='0') {
-          this.nickName = '';
+          // this.nickName = '';
+          this.$store.commit('updateUserInfo', res.result);
+          this.showCart = false;
         }
       });
+    },
+    getCartCount () {
+      axios.get('/users/getCartCount').then(response => {
+        let res = response.data;
+        if (res.status===0) {
+          this.$store.commit('updateCartCount', res.result);
+          this.showCart = true;
+        }
+      })
     }
   }
 }
