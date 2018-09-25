@@ -211,6 +211,7 @@ export default {
         if (res.status==0) {
           // alert('加入成功');
           this.mdShowCart = true;
+          this.$store.commit('changeCartCount', 1);
         } else {
           // alert('Error msg:' + res.msg);
           this.mdShow = true;
