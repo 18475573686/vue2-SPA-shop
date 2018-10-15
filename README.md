@@ -1,4 +1,4 @@
-# vue2-shop-task
+# vue2-SPA-shop
 
 > A Vue.js project
 
