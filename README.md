@@ -1,15 +1,19 @@
 # vue2-SPA-shop
 
-> A Vue.js project
+> A Vue.js project width + Vue2 + Vue-router + Axios + Vuex + Express + Mongoose + Webpack
 
-## Build Setup
+## Run Setup
+
+先启动MongoDB
 
 ``` bash
-# install dependencies
-npm install
+# cd server
+# npm install(后台服务依赖安装)
+# node bin/www (启动后台服务)
 
-# serve with hot reload at localhost:8080
-npm run dev
+# cd .. (切换到上一级目录)
+# npm i (vue 项目依赖安装)
+# npm start(vue项目启动)
 
 # build for production with minification
 npm run build
